@@ -101,19 +101,32 @@ router.post(
                 },
             };
 
+            const secret = process.env.JWT_SECRET;
+            if (!secret) {
+                throw new Error('JWT_SECRET is not defined in environment variables');
+            }
+
             jwt.sign(
                 payload,
-                process.env.JWT_SECRET,
+                secret,
                 { expiresIn: '5 days' },
                 (err, token) => {
-                    if (err) throw err;
+                    if (err) {
+                        console.error('[Auth Login] JWT Sign Error:', err);
+                        return res.status(500).json({ errors: [{ msg: `[DEBUG] JWT Error: ${err.message}` }] });
+                    }
                     console.log('[Auth Login] Token generated for user:', user.id);
                     res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
                 }
             );
         } catch (err) {
-            console.error('[Auth Login] Server error:', err);
-            res.status(500).json({ errors: [{ msg: `[DEBUG] Server Error: ${err.message}` }] });
+            console.error('[Auth Login] CRITICAL Server Error:', err);
+            res.status(500).json({
+                errors: [{
+                    msg: `[DEBUG] Server Error: ${err.message}`,
+                    stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
+                }]
+            });
         }
     }
 );
