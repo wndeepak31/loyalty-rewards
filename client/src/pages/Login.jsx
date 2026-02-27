@@ -29,7 +29,9 @@ const Login = () => {
                 navigate('/dashboard');
             }
         } catch (err) {
-            setError(err.response?.data?.errors?.[0]?.msg || 'Invalid credentials. Please try again.');
+            // Enhanced error reporting for debugging
+            const backendError = err.response?.data?.errors?.[0]?.msg || err.response?.data?.error;
+            setError(backendError || 'Invalid credentials. Please try again.');
         } finally {
             setIsLoading(false);
         }

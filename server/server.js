@@ -30,27 +30,42 @@ app.use(express.json());
 
 // ✅ Routes
 app.get('/api/health', (req, res) => {
-    console.log('[Health Check] Invoked');
-    res.json({
-        status: 'ok',
-        timestamp: new Date().toISOString(),
-        env: process.env.NODE_ENV,
-        vercel: !!process.env.VERCEL,
-        config: {
-            hasDbUrl: !!process.env.DATABASE_URL,
-            hasDbHost: !!process.env.DB_HOST,
-            hasJwtSecret: !!process.env.JWT_SECRET,
-            nodeVersion: process.version
-        }
-    });
+    try {
+        console.log('[Health Check] Invoked');
+        res.json({
+            status: 'ok',
+            timestamp: new Date().toISOString(),
+            env: process.env.NODE_ENV,
+            vercel: !!process.env.VERCEL,
+            config: {
+                hasDbUrl: !!process.env.DATABASE_URL,
+                hasDbHost: !!process.env.DB_HOST,
+                hasJwtSecret: !!process.env.JWT_SECRET,
+                nodeVersion: process.version
+            }
+        });
+    } catch (err) {
+        console.error('[Health Check] Critical Error:', err);
+        res.status(500).json({ error: 'Health Check Failed', message: err.message });
+    }
 });
 
 app.get('/api/db-check', async (req, res) => {
     try {
+        console.log('[DB Check] Attempting authentication...');
         await sequelize.authenticate();
-        res.json({ status: 'connected', message: 'Database connection successful' });
+        res.json({
+            status: 'connected',
+            message: 'Database connection successful',
+            hasUrl: !!process.env.DATABASE_URL
+        });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        console.error('[DB Check] Failure:', err);
+        res.status(500).json({
+            status: 'error',
+            message: err.message,
+            stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
+        });
     }
 });
 
