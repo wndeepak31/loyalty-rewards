@@ -1,3 +1,4 @@
+console.log('[Server] File Loading...');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -29,11 +30,18 @@ app.use(express.json());
 
 // ✅ Routes
 app.get('/api/health', (req, res) => {
+    console.log('[Health Check] Invoked');
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
         env: process.env.NODE_ENV,
-        vercel: !!process.env.VERCEL
+        vercel: !!process.env.VERCEL,
+        config: {
+            hasDbUrl: !!process.env.DATABASE_URL,
+            hasDbHost: !!process.env.DB_HOST,
+            hasJwtSecret: !!process.env.JWT_SECRET,
+            nodeVersion: process.version
+        }
     });
 });
 
