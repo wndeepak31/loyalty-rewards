@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+
+# Debug files
+*.log
+debug_env.js
+test_login_debug.js
+verify_auth_standalone.js
+
+# OS files
+.DS_Store
+Thumbs.db
