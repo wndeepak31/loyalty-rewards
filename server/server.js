@@ -1,21 +1,47 @@
 console.log('[Server] File Loading...');
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '.env') });
 
+let express, cors, path;
+try {
+    express = require('express');
+    cors = require('cors');
+    path = require('path');
+    require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+    console.log('[Server] Core modules loaded');
+} catch (err) {
+    console.error('[Server] FATAL: Core module load failed:', err);
+}
 
-const { sequelize, LoyaltyTier, LoyaltyConfig } = require('./models');
-const startExpiryJob = require('./cron/loyaltyCron');
+let sequelize, LoyaltyTier, LoyaltyConfig, startExpiryJob;
+try {
+    const models = require('./models');
+    sequelize = models.sequelize;
+    LoyaltyTier = models.LoyaltyTier;
+    LoyaltyConfig = models.LoyaltyConfig;
+    console.log('[Server] Models loaded');
+} catch (err) {
+    console.error('[Server] FATAL: Models load failed:', err);
+}
 
-// ✅ Import all routes
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
-const transactionRoutes = require('./routes/transactions');
-const rewardRoutes = require('./routes/rewards');
-const redemptionRoutes = require('./routes/redemptions');
-const adminRoutes = require('./routes/admin');
-const loyaltyRoutes = require('./routes/loyalty');
+try {
+    startExpiryJob = require('./cron/loyaltyCron');
+    console.log('[Server] Cron loaded');
+} catch (err) {
+    console.error('[Server] FATAL: Cron load failed:', err);
+}
+
+let authRoutes, userRoutes, transactionRoutes, rewardRoutes, redemptionRoutes, adminRoutes, loyaltyRoutes;
+try {
+    authRoutes = require('./routes/auth');
+    userRoutes = require('./routes/users');
+    transactionRoutes = require('./routes/transactions');
+    rewardRoutes = require('./routes/rewards');
+    redemptionRoutes = require('./routes/redemptions');
+    adminRoutes = require('./routes/admin');
+    loyaltyRoutes = require('./routes/loyalty');
+    console.log('[Server] Routes loaded');
+} catch (err) {
+    console.error('[Server] FATAL: Routes load failed:', err);
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,7 +52,6 @@ module.exports = app;
 // ✅ Middleware
 app.use(cors());
 app.use(express.json());
-
 
 // ✅ Routes
 app.get('/api/health', (req, res) => {
@@ -69,13 +94,13 @@ app.get('/api/db-check', async (req, res) => {
     }
 });
 
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/transactions', transactionRoutes);
-app.use('/api/rewards', rewardRoutes);
-app.use('/api/redemptions', redemptionRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/loyalty', loyaltyRoutes);
+if (authRoutes) app.use('/api/auth', authRoutes);
+if (userRoutes) app.use('/api/users', userRoutes);
+if (transactionRoutes) app.use('/api/transactions', transactionRoutes);
+if (rewardRoutes) app.use('/api/rewards', rewardRoutes);
+if (redemptionRoutes) app.use('/api/redemptions', redemptionRoutes);
+if (adminRoutes) app.use('/api/admin', adminRoutes);
+if (loyaltyRoutes) app.use('/api/loyalty', loyaltyRoutes);
 
 // ✅ Database initialization
 const initDb = async () => {
@@ -134,7 +159,7 @@ const initDb = async () => {
 
         // Only start cron in non-production environments (use Vercel Cron for prod)
         if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
-            startExpiryJob();
+            if (startExpiryJob) startExpiryJob();
         }
 
     } catch (err) {
