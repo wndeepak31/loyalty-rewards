@@ -4,6 +4,7 @@ require('dotenv').config();
 const sequelize = process.env.DATABASE_URL
   ? new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
+    protocol: 'postgres',
     dialectOptions: {
       ssl: {
         require: true,
@@ -12,7 +13,7 @@ const sequelize = process.env.DATABASE_URL
     },
     logging: false,
     pool: {
-      max: 5,
+      max: 3, // Reduced for serverless to avoid Neon connection limits
       min: 0,
       acquire: 30000,
       idle: 10000,

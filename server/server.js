@@ -143,7 +143,17 @@ const initDb = async () => {
 };
 
 // Start initialization in background without blocking
-initDb().catch(err => console.error('Background DB Init Error:', err));
+const databaseInit = async () => {
+    try {
+        console.log('[Init] Starting Database Initialization...');
+        await initDb();
+        console.log('[Init] Database Initialization Complete');
+    } catch (err) {
+        console.error('[Init] CRITICAL ERROR during startup:', err);
+    }
+};
+
+databaseInit();
 
 if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
     app.listen(PORT, () => {
