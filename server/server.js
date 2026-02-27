@@ -12,6 +12,7 @@ try {
 }
 
 let sequelize, LoyaltyTier, LoyaltyConfig, startExpiryJob;
+let modelLoadError = null;
 try {
     const models = require('./models');
     sequelize = models.sequelize;
@@ -19,7 +20,8 @@ try {
     LoyaltyConfig = models.LoyaltyConfig;
     console.log('[Server] Models loaded');
 } catch (err) {
-    console.error('[Server] FATAL: Models load failed:', err);
+    modelLoadError = err;
+    console.error('[Server] FATAL: Models load failed:', err.message, err.stack);
 }
 
 try {
@@ -76,6 +78,14 @@ app.get('/api/health', (req, res) => {
 });
 
 app.get('/api/db-check', async (req, res) => {
+    if (modelLoadError) {
+        return res.status(500).json({
+            status: 'error',
+            phase: 'model_loading',
+            message: modelLoadError.message,
+            stack: modelLoadError.stack
+        });
+    }
     try {
         console.log('[DB Check] Attempting authentication...');
         await sequelize.authenticate();
@@ -88,8 +98,9 @@ app.get('/api/db-check', async (req, res) => {
         console.error('[DB Check] Failure:', err);
         res.status(500).json({
             status: 'error',
+            phase: 'db_connection',
             message: err.message,
-            stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
+            stack: err.stack
         });
     }
 });
