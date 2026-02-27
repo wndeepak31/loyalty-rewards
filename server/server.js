@@ -5,7 +5,9 @@ try {
     express = require('express');
     cors = require('cors');
     path = require('path');
-    require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+    if (process.env.NODE_ENV !== 'production') {
+        require('dotenv').config();
+    }
     console.log('[Server] Core modules loaded');
 } catch (err) {
     console.error('[Server] FATAL: Core module load failed:', err);
