@@ -119,8 +119,8 @@ const initDb = async () => {
     }
 };
 
-// Start initialization in background
-initDb();
+// Start initialization in background without blocking
+initDb().catch(err => console.error('Background DB Init Error:', err));
 
 if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
     app.listen(PORT, () => {
