@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Gift, Shield, Star, Zap, ArrowRight, CheckCircle2, ChevronRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
 
 const LandingPage = () => {
     const { user } = useAuth();
