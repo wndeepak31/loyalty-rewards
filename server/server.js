@@ -125,8 +125,12 @@ const initDb = async () => {
         try {
             await sequelize.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS lifetime_spend DECIMAL(15, 2) DEFAULT 0.00;');
             console.log('Verified lifetime_spend column exists');
+
+            // Align Silver tier to 0 if it exists
+            await sequelize.query("UPDATE loyalty_tiers SET min_spend = 0 WHERE name = 'Silver' AND min_spend > 0;");
+            console.log('Verified Silver tier starts at 0');
         } catch (colErr) {
-            console.warn('Column check/add failed (may already exist):', colErr.message);
+            console.warn('Production DB alignment failed:', colErr.message);
         }
 
         // Only sync in development or if explicitly requested via env
