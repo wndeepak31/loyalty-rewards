@@ -248,7 +248,8 @@ class LoyaltyService {
         let currentTier = null;
         let nextTier = null;
 
-        // Tiers are sorted ASC (minSpend: 0, 100000, 500000, 1000000)
+        // Tiers are sorted ASC (minSpend: 0, 100000, 500000, 1000000 etc. - wait, user says 1 lac, 2 lac)
+        // Let's find the highest tier the user qualifies for
         for (let i = 0; i < tiers.length; i++) {
             if (currentSpend >= parseFloat(tiers[i].minSpend)) {
                 currentTier = tiers[i];
@@ -258,10 +259,10 @@ class LoyaltyService {
             }
         }
 
-        // Ensure we have a default tier if none found (fallback to lowest tier)
+        // If user spend is below the first defined tier (e.g. 100,000)
         if (!currentTier && tiers.length > 0) {
-            currentTier = tiers[0];
-            nextTier = tiers[1] || null;
+            currentTier = { name: 'Member', minSpend: 0 };
+            nextTier = tiers[0];
         }
 
         if (!nextTier) {
@@ -354,8 +355,8 @@ class LoyaltyService {
             transaction
         });
 
-        // Set default to the lowest tier (Silver)
-        let newTier = tiers[tiers.length - 1]?.name || 'Silver';
+        // Set default to 'Member' if below any threshold
+        let newTier = 'Member';
         for (const tier of tiers) {
             if (user.yearlySpend >= parseFloat(tier.minSpend)) {
                 newTier = tier.name;

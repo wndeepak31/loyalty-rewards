@@ -126,9 +126,12 @@ const initDb = async () => {
             await sequelize.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS lifetime_spend DECIMAL(15, 2) DEFAULT 0.00;');
             console.log('Verified lifetime_spend column exists');
 
-            // Align Silver tier to 0 if it exists
-            await sequelize.query("UPDATE loyalty_tiers SET min_spend = 0 WHERE name = 'Silver' AND min_spend > 0;");
-            console.log('Verified Silver tier starts at 0');
+            // Align Tier Thresholds: Silver at 1 lac, Gold at 2 lac
+            await sequelize.query("UPDATE loyalty_tiers SET min_spend = 100000 WHERE name = 'Silver';");
+            await sequelize.query("UPDATE loyalty_tiers SET min_spend = 200000 WHERE name = 'Gold';");
+            await sequelize.query("UPDATE loyalty_tiers SET min_spend = 500000 WHERE name = 'Platinum' AND min_spend < 500000;");
+            await sequelize.query("UPDATE loyalty_tiers SET min_spend = 1000000 WHERE name = 'Diamond' AND min_spend < 1000000;");
+            console.log('Verified Loyalty Tier thresholds (Silver: 1L, Gold: 2L)');
         } catch (colErr) {
             console.warn('Production DB alignment failed:', colErr.message);
         }
