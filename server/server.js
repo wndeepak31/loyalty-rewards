@@ -121,6 +121,14 @@ const initDb = async () => {
         await sequelize.authenticate();
         console.log('Database connected');
 
+        // ✅ Critical: Ensure new column exists in production without full sync
+        try {
+            await sequelize.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS lifetime_spend DECIMAL(15, 2) DEFAULT 0.00;');
+            console.log('Verified lifetime_spend column exists');
+        } catch (colErr) {
+            console.warn('Column check/add failed (may already exist):', colErr.message);
+        }
+
         // Only sync in development or if explicitly requested via env
         if (process.env.NODE_ENV === 'development' || process.env.FORCE_DB_SYNC === 'true') {
             await sequelize.sync({ alter: true });
