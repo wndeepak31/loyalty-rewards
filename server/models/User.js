@@ -53,6 +53,12 @@ const User = sequelize.define('User', {
         defaultValue: 0.00,
         allowNull: false,
     },
+    lifetimeSpend: {
+        type: DataTypes.DECIMAL(15, 2),
+        defaultValue: 0.00,
+        allowNull: false,
+        field: 'lifetime_spend'
+    },
     resetPasswordToken: {
         type: DataTypes.STRING(255),
         allowNull: true,

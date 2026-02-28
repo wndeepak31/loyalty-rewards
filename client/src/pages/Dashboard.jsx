@@ -51,8 +51,8 @@ const Dashboard = () => {
 
                 const [txnsRes, configRes, tiersRes] = await Promise.all([
                     api.get('/transactions'),
-                    api.get('/admin/config'),
-                    api.get('/admin/tiers')
+                    api.get('/loyalty/config'),
+                    api.get('/loyalty/tiers')
                 ]);
                 setRecentTransactions(txnsRes.data.slice(0, 5));
                 setLoyaltyData({
@@ -134,10 +134,16 @@ const Dashboard = () => {
                     }
                 />
                 <StatCard
-                    title="Lifetime Earnings"
+                    title="Lifetime Status"
                     value={user?.totalPoints || 0}
                     icon={TrendingUp}
-                    description="Cumulative points history"
+                    description="Total points earned"
+                    footer={
+                        <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">CUMULATIVE SPEND</span>
+                            <span className="text-xs font-black text-slate-900">₹{parseFloat(user?.lifetimeSpend || 0).toLocaleString()}</span>
+                        </div>
+                    }
                 />
                 <StatCard
                     title="Account Level"

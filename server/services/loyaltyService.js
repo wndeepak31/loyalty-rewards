@@ -254,19 +254,14 @@ class LoyaltyService {
                 currentTier = tiers[i];
                 nextTier = tiers[i + 1] || null;
             } else {
-                // If we haven't found the current tier yet, the first tier is the target
-                if (!currentTier) {
-                    currentTier = { name: 'None', minSpend: 0 };
-                    nextTier = tiers[0];
-                }
                 break;
             }
         }
 
-        // Special case: If user spend is less than the lowest tier (though Silver is usually 0)
+        // Ensure we have a default tier if none found (fallback to lowest tier)
         if (!currentTier && tiers.length > 0) {
-            currentTier = { name: 'None', minSpend: 0 };
-            nextTier = tiers[0];
+            currentTier = tiers[0];
+            nextTier = tiers[1] || null;
         }
 
         if (!nextTier) {
@@ -313,7 +308,7 @@ class LoyaltyService {
 
         // 1. Calculate Yearly Spend (Current Calendar Year)
         const startOfYear = new Date(new Date().getFullYear(), 0, 1);
-        const totalSpend = await Transaction.sum('amount', {
+        const yearlySpend = await Transaction.sum('amount', {
             where: {
                 userId,
                 createdAt: { [Op.gte]: startOfYear }
@@ -321,7 +316,13 @@ class LoyaltyService {
             transaction
         }) || 0;
 
-        // 2. Calculate Lifetime Total Points (Sum of all EARN records)
+        // 2. Calculate Lifetime Spend
+        const lifetimeSpend = await Transaction.sum('amount', {
+            where: { userId },
+            transaction
+        }) || 0;
+
+        // 3. Calculate Lifetime Total Points (Sum of all EARN records)
         const totalPoints = await PointsLedger.sum('points', {
             where: {
                 userId,
@@ -330,7 +331,7 @@ class LoyaltyService {
             transaction
         }) || 0;
 
-        // 3. Calculate Available Points (Sum of all remainingPoints in active/unexpired EARN records)
+        // 4. Calculate Available Points (Sum of all remainingPoints in active/unexpired EARN records)
         const availablePoints = await PointsLedger.sum('remainingPoints', {
             where: {
                 userId,
@@ -341,18 +342,20 @@ class LoyaltyService {
             transaction
         }) || 0;
 
-        // 4. Update User record
-        user.yearlySpend = parseFloat(totalSpend);
+        // 5. Update User record
+        user.yearlySpend = parseFloat(yearlySpend);
+        user.lifetimeSpend = parseFloat(lifetimeSpend);
         user.totalPoints = parseInt(totalPoints);
         user.availablePoints = parseInt(availablePoints);
 
-        // 5. Determine correct tier
+        // 6. Determine correct tier
         const tiers = await LoyaltyTier.findAll({
             order: [['minSpend', 'DESC']],
             transaction
         });
 
-        let newTier = 'Silver';
+        // Set default to the lowest tier (Silver)
+        let newTier = tiers[tiers.length - 1]?.name || 'Silver';
         for (const tier of tiers) {
             if (user.yearlySpend >= parseFloat(tier.minSpend)) {
                 newTier = tier.name;

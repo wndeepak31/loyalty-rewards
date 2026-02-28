@@ -94,7 +94,15 @@ const TierProgressCard = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                     <div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Annual Qualifying Spend</div>
+                        <div className="flex items-center gap-2 mb-1.5">
+                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Annual Qualifying Spend</div>
+                            <div className="group/info relative">
+                                <Info className="w-3 h-3 text-slate-300 cursor-help" />
+                                <div className="absolute bottom-full left-0 mb-2 w-48 p-2 bg-slate-900 text-white text-[10px] rounded-lg opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
+                                    Resets annually. Determines your membership tier for the current year.
+                                </div>
+                            </div>
+                        </div>
                         <div className="text-4xl font-black text-slate-900 flex items-baseline gap-1">
                             <span className="text-2xl font-extrabold text-slate-400">₹</span>
                             {currentSpend.toLocaleString()}
