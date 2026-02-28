@@ -8,6 +8,9 @@ const { User } = require('../models');
 // @access  Private
 router.get('/me', protect, async (req, res) => {
     try {
+        const LoyaltyService = require('../services/loyaltyService');
+        await LoyaltyService.recalculateBalances(req.user.id);
+
         const user = await User.findByPk(req.user.id, {
             attributes: { exclude: ['password'] },
         });

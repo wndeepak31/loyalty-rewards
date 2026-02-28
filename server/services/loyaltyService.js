@@ -234,6 +234,9 @@ class LoyaltyService {
      * Get dynamic tier progress for a user
      */
     static async getTierProgress(userId) {
+        // Ensure data is fresh
+        await this.recalculateBalances(userId);
+
         const user = await User.findByPk(userId);
         if (!user) throw new Error('User not found');
 
@@ -298,6 +301,69 @@ class LoyaltyService {
             remainingAmount: Math.ceil(remainingAmount),
             progressPercentage: Math.round(progressPercentage)
         };
+    }
+
+    /**
+     * Recalculate all user balances and tier from source records
+     * Crucial for data consistency when records are modified in DB.
+     */
+    static async recalculateBalances(userId, transaction = null) {
+        const user = await User.findByPk(userId, { transaction });
+        if (!user) return null;
+
+        // 1. Calculate Yearly Spend (Current Calendar Year)
+        const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+        const totalSpend = await Transaction.sum('amount', {
+            where: {
+                userId,
+                createdAt: { [Op.gte]: startOfYear }
+            },
+            transaction
+        }) || 0;
+
+        // 2. Calculate Lifetime Total Points (Sum of all EARN records)
+        const totalPoints = await PointsLedger.sum('points', {
+            where: {
+                userId,
+                type: 'EARN'
+            },
+            transaction
+        }) || 0;
+
+        // 3. Calculate Available Points (Sum of all remainingPoints in active/unexpired EARN records)
+        const availablePoints = await PointsLedger.sum('remainingPoints', {
+            where: {
+                userId,
+                type: 'EARN',
+                remainingPoints: { [Op.gt]: 0 },
+                expiresAt: { [Op.gt]: new Date() }
+            },
+            transaction
+        }) || 0;
+
+        // 4. Update User record
+        user.yearlySpend = parseFloat(totalSpend);
+        user.totalPoints = parseInt(totalPoints);
+        user.availablePoints = parseInt(availablePoints);
+
+        // 5. Determine correct tier
+        const tiers = await LoyaltyTier.findAll({
+            order: [['minSpend', 'DESC']],
+            transaction
+        });
+
+        let newTier = 'Silver';
+        for (const tier of tiers) {
+            if (user.yearlySpend >= parseFloat(tier.minSpend)) {
+                newTier = tier.name;
+                break;
+            }
+        }
+        user.tier = newTier;
+
+        await user.save({ transaction });
+
+        return user;
     }
 }
 

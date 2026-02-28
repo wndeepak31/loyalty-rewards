@@ -38,7 +38,7 @@ const StatCard = ({ title, value, icon: Icon, description, className, footer }) 
 );
 
 const Dashboard = () => {
-    const { user } = useAuth();
+    const { user, refreshUser } = useAuth();
     const [recentTransactions, setRecentTransactions] = useState([]);
     const [loyaltyData, setLoyaltyData] = useState({ tiers: [], config: null });
     const [loading, setLoading] = useState(true);
@@ -46,6 +46,9 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Refresh user data (triggers backend recalculation)
+                await refreshUser();
+
                 const [txnsRes, configRes, tiersRes] = await Promise.all([
                     api.get('/transactions'),
                     api.get('/admin/config'),
