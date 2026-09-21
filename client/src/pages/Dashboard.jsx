@@ -127,7 +127,7 @@ const Dashboard = () => {
                     footer={
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-slate-400">REDEMPTION CAP</span>
-                            <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 hover:bg-emerald-50 border-none font-black text-[10px]">
+                            <Badge variant="secondary" className="bg-brand-50 text-brand-700 hover:bg-brand-100/80 border border-brand-200/50 font-black text-[10px]">
                                 {maxRedeemAmount} PTS MAX
                             </Badge>
                         </div>
@@ -166,7 +166,7 @@ const Dashboard = () => {
                             <CardTitle className="text-lg font-extrabold text-slate-900">Recent Ledger Activity</CardTitle>
                             <CardDescription className="font-medium text-slate-500">First-In, First-Out point tracking.</CardDescription>
                         </div>
-                        <Button asChild variant="ghost" size="sm" className="font-bold text-primary hover:text-primary hover:bg-primary/5">
+                        <Button asChild variant="ghost" size="sm" className="font-bold text-brand-600 hover:text-brand-700 hover:bg-brand-50">
                             <Link to="/transactions">
                                 Full History
                                 <ChevronRight className="h-4 w-4 ml-1" />
@@ -193,7 +193,7 @@ const Dashboard = () => {
                                             </TableCell>
                                             <TableCell className="text-right font-bold text-slate-900">₹{txn.amount}</TableCell>
                                             <TableCell className="text-right pr-8">
-                                                <span className="text-emerald-600 font-black">+{txn.pointsEarned}</span>
+                                                <span className="text-brand-600 font-black">+{txn.pointsEarned}</span>
                                             </TableCell>
                                         </TableRow>
                                     ))

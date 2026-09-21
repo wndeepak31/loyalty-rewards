@@ -14,6 +14,8 @@ import {
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/Button';
 
+import BrandLogo from '../ui/BrandLogo';
+
 const Sidebar = () => {
     const { user, logout } = useAuth();
 
@@ -36,10 +38,10 @@ const Sidebar = () => {
             to={item.path}
             className={({ isActive }) =>
                 cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:text-primary",
+                    "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all",
                     isActive
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:bg-secondary/50"
+                        ? "bg-brand-50 text-brand-600 shadow-sm border border-brand-100/60"
+                        : "text-slate-600 hover:text-brand-600 hover:bg-slate-50"
                 )
             }
         >
@@ -49,13 +51,14 @@ const Sidebar = () => {
     );
 
     return (
-        <div className="flex h-screen w-64 flex-col border-r bg-white">
-            <div className="flex h-14 items-center border-b px-6 lg:h-[60px]">
-                <Link to="/dashboard" className="flex items-center gap-2 font-semibold">
-                    <div className="bg-primary p-1 rounded-md">
-                        <Gift className="h-5 w-5 text-primary-foreground" />
-                    </div>
-                    <span className="text-lg font-bold tracking-tight">Loyalty Rewards</span>
+        <div className="flex h-screen w-64 flex-col border-r border-slate-100 bg-white">
+            <div className="flex h-16 items-center border-b border-slate-100 px-5">
+                <Link to="/dashboard" className="flex items-center">
+                    <BrandLogo
+                        imageClassName="h-7 w-auto object-contain"
+                        showBadge={true}
+                        badgeText="Rewards"
+                    />
                 </Link>
             </div>
 
@@ -74,7 +77,7 @@ const Sidebar = () => {
 
                     {user?.role === 'admin' && (
                         <div className="mt-6 py-2">
-                            <h4 className="mb-2 px-4 text-xs font-semibold tracking-wider uppercase text-primary">
+                            <h4 className="mb-2 px-4 text-xs font-bold tracking-wider uppercase text-brand-600">
                                 Admin Panel
                             </h4>
                             <div className="space-y-1">
@@ -87,9 +90,9 @@ const Sidebar = () => {
                 </nav>
             </div>
 
-            <div className="mt-auto border-t p-4 bg-slate-50/50">
+            <div className="mt-auto border-t border-slate-100 p-4 bg-slate-50/50">
                 <div className="flex items-center gap-3 px-2 py-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary font-bold">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-brand-700 font-bold text-sm">
                         {user?.name?.[0] || 'U'}
                     </div>
                     <div className="flex flex-col">

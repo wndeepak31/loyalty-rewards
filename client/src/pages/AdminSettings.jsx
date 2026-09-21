@@ -87,8 +87,8 @@ const AdminSettings = () => {
                 </div>
                 <div className="flex gap-4">
                     <div className="bg-white p-5 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-50 flex items-center gap-4">
-                        <div className="h-10 w-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
-                            <RefreshCw className="h-5 w-5 text-emerald-500 animate-spin-slow" />
+                        <div className="h-10 w-10 rounded-2xl bg-brand-500/10 flex items-center justify-center">
+                            <RefreshCw className="h-5 w-5 text-brand-600 animate-spin-slow" />
                         </div>
                         <div>
                             <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Real-time Feed</div>
@@ -183,15 +183,15 @@ const AdminSettings = () => {
                         </CardContent>
                     </Card>
 
-                    <div className="p-8 bg-emerald-50/50 border border-emerald-100 rounded-[2.5rem] space-y-6">
+                    <div className="p-8 bg-brand-50/60 border border-brand-200/70 rounded-[2.5rem] space-y-6">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-emerald-100 rounded-xl">
-                                <Shield className="h-4 w-4 text-emerald-600" />
+                            <div className="p-2 bg-brand-100 rounded-xl">
+                                <Shield className="h-4 w-4 text-brand-700" />
                             </div>
-                            <span className="text-xs font-black text-emerald-800 uppercase tracking-widest">Safety Protocol</span>
+                            <span className="text-xs font-black text-brand-800 uppercase tracking-widest">Safety Protocol</span>
                         </div>
-                        <p className="text-sm font-medium text-emerald-800/80 leading-relaxed">
-                            Updates to <span className="text-emerald-950 font-black">Constants</span> are applied instantly across the entire transaction engine. Historical data remains locked for audit integrity.
+                        <p className="text-sm font-medium text-brand-800/90 leading-relaxed">
+                            Updates to <span className="text-brand-950 font-black">Constants</span> are applied instantly across the entire transaction engine. Historical data remains locked for audit integrity.
                         </p>
                     </div>
                 </div>

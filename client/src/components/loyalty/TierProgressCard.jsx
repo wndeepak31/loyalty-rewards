@@ -68,12 +68,12 @@ const TierProgressCard = () => {
     return (
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 relative overflow-hidden group transition-all duration-300 hover:shadow-md">
             {/* Elegant Background Accent */}
-            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-50/30 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-emerald-100/40 transition-colors duration-500"></div>
+            <div className="absolute top-0 right-0 w-48 h-48 bg-brand-50/50 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-brand-100/60 transition-colors duration-500"></div>
 
             <div className="relative z-10">
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-emerald-50 rounded-xl text-emerald-600 shadow-sm shadow-emerald-100/50">
+                        <div className="p-2.5 bg-brand-50 rounded-xl text-brand-600 shadow-sm shadow-brand-100/50 border border-brand-100/80">
                             <Award className="w-5 h-5" />
                         </div>
                         <div>
@@ -84,7 +84,7 @@ const TierProgressCard = () => {
                     {!isHighestTier && (
                         <div className="text-right">
                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-0.5">Target</span>
-                            <div className="flex items-center gap-1.5 text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl text-xs font-bold ring-1 ring-emerald-100/50">
+                            <div className="flex items-center gap-1.5 text-brand-600 bg-brand-50 px-3 py-1.5 rounded-xl text-xs font-bold ring-1 ring-brand-200/60">
                                 <Zap className="w-3.5 h-3.5 fill-current" />
                                 {nextTier}
                             </div>
@@ -111,10 +111,10 @@ const TierProgressCard = () => {
                     <div className="flex flex-col justify-end md:text-right">
                         {!isHighestTier ? (
                             <p className="text-sm font-semibold text-slate-600 leading-relaxed">
-                                You are <span className="text-emerald-600 font-bold">₹{remainingAmount.toLocaleString()}</span> away from <span className="text-slate-900 font-black">{nextTier}</span>
+                                You are <span className="text-brand-600 font-bold">₹{remainingAmount.toLocaleString()}</span> away from <span className="text-slate-900 font-black">{nextTier}</span>
                             </p>
                         ) : (
-                            <div className="flex items-center md:justify-end gap-2 text-sm font-black text-emerald-600 bg-emerald-50 w-fit md:ml-auto px-4 py-2 rounded-2xl ring-1 ring-emerald-100">
+                            <div className="flex items-center md:justify-end gap-2 text-sm font-black text-brand-600 bg-brand-50 w-fit md:ml-auto px-4 py-2 rounded-2xl ring-1 ring-brand-200">
                                 <Award className="w-4 h-4" />
                                 You have reached our highest membership tier
                             </div>
@@ -128,7 +128,7 @@ const TierProgressCard = () => {
                             initial={{ width: 0 }}
                             animate={{ width: `${progressPercentage}%` }}
                             transition={{ duration: 1.5, ease: [0.34, 1.56, 0.64, 1] }}
-                            className="shadow-lg flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 relative overflow-hidden"
+                            className="shadow-lg flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-amber-500 via-brand-500 to-brand-600 relative overflow-hidden"
                         >
                             {/* Glossy Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent"></div>

@@ -4,6 +4,7 @@ import { Gift, Shield, Star, Zap, ArrowRight, CheckCircle2, ChevronRight } from 
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import BrandLogo from '../components/ui/BrandLogo';
 
 const LandingPage = () => {
     const { user } = useAuth();
@@ -14,13 +15,6 @@ const LandingPage = () => {
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch public tiers and config (using admin endpoints for now as they are basically public getters if we want them to be, 
-                // but let's assume there are public equivalents or just use the same ones if unprotected)
-                // Actually, the admin routes are PROTECTED with [protect, requireRole('admin')].
-                // I should probably have a public route for this or just keep hardcoded fallbacks if I don't want to change backend routes yet.
-                // However, for a fully functional loyalty app, these should be public.
-
-                // Let's check if there are public loyalty routes
                 const [tiersRes, configRes] = await Promise.all([
                     api.get('/admin/tiers').catch(() => ({ data: [] })),
                     api.get('/admin/config').catch(() => ({ data: null }))
@@ -40,9 +34,9 @@ const LandingPage = () => {
     // Fallbacks if API fails or is protected
     const displayTiers = tiers.length > 0 ? tiers : [
         { name: 'Silver', minSpend: '0', earnRate: 0.10, benefits: { list: ['Earn 10% points', 'Basic rewards access', 'Standard support'], icon: 'S' }, color: 'bg-slate-100', text: 'text-slate-600' },
-        { name: 'Gold', minSpend: '100000', earnRate: 0.15, benefits: { list: ['Earn 15% points', 'Priority redemptions', 'Birthday exclusive'], icon: 'G' }, color: 'bg-amber-50', text: 'text-amber-700' },
-        { name: 'Platinum', minSpend: '500000', earnRate: 0.20, benefits: { list: ['Earn 20% points', 'Concierge service', 'Private events'], icon: 'P' }, color: 'bg-indigo-50', text: 'text-indigo-700' },
-        { name: 'Diamond', minSpend: '1000000', earnRate: 0.25, benefits: { list: ['Earn 25% points', 'Unlimited everything', 'Lifetime warranty'], icon: 'D' }, color: 'bg-emerald-50', text: 'text-emerald-700' },
+        { name: 'Gold', minSpend: '100000', earnRate: 0.15, benefits: { list: ['Earn 15% points', 'Priority redemptions', 'Birthday exclusive'], icon: 'G' }, color: 'bg-amber-50 border border-amber-200', text: 'text-amber-700' },
+        { name: 'Platinum', minSpend: '500000', earnRate: 0.20, benefits: { list: ['Earn 20% points', 'Concierge service', 'Private events'], icon: 'P' }, color: 'bg-slate-100', text: 'text-slate-700' },
+        { name: 'Diamond', minSpend: '1000000', earnRate: 0.25, benefits: { list: ['Earn 25% points', 'Unlimited everything', 'Lifetime warranty'], icon: 'D' }, color: 'bg-brand-50 border border-brand-200', text: 'text-brand-700' },
     ];
 
     const displayConfig = config || {
@@ -52,20 +46,20 @@ const LandingPage = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-white text-slate-900 font-sans selection:bg-primary/20">
-            {/* ... header unchanged ... */}
-            <header className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl border-b border-slate-100">
+        <div className="flex flex-col min-h-screen bg-white text-slate-900 font-sans selection:bg-brand-500/20">
+            <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
                 <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                        <div className="bg-primary p-1.5 rounded-lg shadow-sm">
-                            <Gift className="h-5 w-5 text-white" />
-                        </div>
-                        <span className="text-xl font-bold tracking-tight text-slate-900">Loyalty Rewards</span>
-                    </div>
+                    <Link to="/" className="flex items-center">
+                        <BrandLogo
+                            imageClassName="h-8 w-auto object-contain"
+                            showBadge={true}
+                            badgeText="Loyalty"
+                        />
+                    </Link>
                     <nav className="hidden lg:flex items-center gap-10">
-                        <a href="#tiers" className="text-[15px] font-medium text-slate-600 hover:text-primary transition-colors">Tiers</a>
-                        <a href="#benefits" className="text-[15px] font-medium text-slate-600 hover:text-primary transition-colors">Benefits</a>
-                        <a href="#how-it-works" className="text-[15px] font-medium text-slate-600 hover:text-primary transition-colors">How It Works</a>
+                        <a href="#tiers" className="text-[15px] font-medium text-slate-600 hover:text-brand-600 transition-colors">Tiers</a>
+                        <a href="#benefits" className="text-[15px] font-medium text-slate-600 hover:text-brand-600 transition-colors">Benefits</a>
+                        <a href="#how-it-works" className="text-[15px] font-medium text-slate-600 hover:text-brand-600 transition-colors">How It Works</a>
                     </nav>
                     <div className="flex items-center gap-5">
                         {user ? (
@@ -74,8 +68,8 @@ const LandingPage = () => {
                             </Button>
                         ) : (
                             <>
-                                <Link to="/login" className="text-[15px] font-medium text-slate-600 hover:text-primary transition-colors">Login</Link>
-                                <Button asChild className="rounded-full px-6 bg-slate-900 hover:bg-slate-800 text-white border-none">
+                                <Link to="/login" className="text-[15px] font-medium text-slate-600 hover:text-brand-600 transition-colors">Login</Link>
+                                <Button asChild className="rounded-full px-6 bg-primary hover:bg-brand-700 text-white border-none shadow-md shadow-brand-500/20">
                                     <Link to="/signup">Join Now</Link>
                                 </Button>
                             </>
@@ -87,21 +81,20 @@ const LandingPage = () => {
             <main className="flex-grow">
                 {/* Hero Section */}
                 <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-40 overflow-hidden bg-slate-50/50">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.05),transparent)] pointer-events-none" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(243,108,20,0.08),transparent)] pointer-events-none" />
                     <div className="container mx-auto px-6 text-center relative z-10">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[13px] font-bold mb-8 border border-emerald-100 shadow-sm">
-                            <Star className="h-3.5 w-3.5 fill-emerald-600 border-none" />
-                            <span>Enterprise Loyalty Reimagined</span>
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 text-brand-700 text-[13px] font-bold mb-8 border border-brand-200/70 shadow-sm">
+                            <Star className="h-3.5 w-3.5 fill-brand-500 text-brand-500" />
+                            <span>Effission Jewellery Loyalty Program</span>
                         </div>
-                        <h1 className="text-5xl lg:text-[84px] font-extrabold tracking-tight leading-[1.1] mb-8 text-slate-900">
-                            The Jewelry Loyalty <br className="hidden md:block" /> Engine for Premium Brands
+                        <h1 className="text-5xl lg:text-[80px] font-extrabold tracking-tight leading-[1.1] mb-8 text-slate-900">
+                            The Jewellery Loyalty <br className="hidden md:block" /> Engine for <span className="text-brand-600">Gold & Luxury</span>
                         </h1>
                         <p className="text-lg lg:text-xl text-slate-500 max-w-3xl mx-auto mb-12 leading-relaxed">
-                            Elevate your customer relationship with an intelligent rewards platform.
-                            Built for luxury brands that demand precision, security, and elegance.
+                            Elevate your customer relationship with an intelligent rewards platform built for fine jewellery brands that demand precision, security, and pure elegance.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
-                            <Button size="lg" className="rounded-full px-10 h-14 text-base font-semibold shadow-lg shadow-primary/20" asChild>
+                            <Button size="lg" className="rounded-full px-10 h-14 text-base font-semibold shadow-lg shadow-brand-500/25 bg-primary hover:bg-brand-700 text-white" asChild>
                                 <Link to={user ? "/dashboard" : "/signup"}>
                                     {user ? "Back to Dashboard" : "Start Your Journey"} <ArrowRight className="ml-2 h-5 w-5" />
                                 </Link>
@@ -144,8 +137,8 @@ const LandingPage = () => {
                                     <ul className="space-y-4 mb-2">
                                         {tier.benefits?.list?.map((b, j) => (
                                             <li key={j} className="text-[15px] flex items-center gap-3 text-slate-600 font-medium">
-                                                <div className="h-5 w-5 rounded-full bg-emerald-50 flex items-center justify-center">
-                                                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                                                <div className="h-5 w-5 rounded-full bg-brand-50 flex items-center justify-center">
+                                                    <CheckCircle2 className="h-3.5 w-3.5 text-brand-600" />
                                                 </div>
                                                 <span>{b}</span>
                                             </li>
@@ -190,12 +183,12 @@ const LandingPage = () => {
                             <div className="relative">
                                 <div className="aspect-[4/5] bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200 border border-slate-100 p-10 relative overflow-hidden flex flex-col justify-center gap-6">
                                     <div className="space-y-6">
-                                        <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100">
-                                            <div className="text-xs font-black text-emerald-600 uppercase tracking-widest mb-2">Base Earn Rate</div>
+                                        <div className="bg-brand-50 rounded-2xl p-6 border border-brand-200/60">
+                                            <div className="text-xs font-black text-brand-600 uppercase tracking-widest mb-2">Base Earn Rate</div>
                                             <div className="text-4xl font-extrabold text-slate-900">{Math.round(displayConfig.earnRatePercentage * 100)}% <span className="text-sm text-slate-400">Back in points</span></div>
                                         </div>
-                                        <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100">
-                                            <div className="text-xs font-black text-blue-600 uppercase tracking-widest mb-2">Redemption Cap</div>
+                                        <div className="bg-amber-50 rounded-2xl p-6 border border-amber-100">
+                                            <div className="text-xs font-black text-amber-700 uppercase tracking-widest mb-2">Redemption Cap</div>
                                             <div className="text-4xl font-extrabold text-slate-900">{Math.round(displayConfig.maxRedeemPercentage * 100)}% <span className="text-sm text-slate-400">Per transaction</span></div>
                                         </div>
                                         <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
@@ -204,7 +197,7 @@ const LandingPage = () => {
                                         </div>
                                     </div>
                                     {/* Decorative element */}
-                                    <div className="absolute -bottom-8 -right-8 w-40 h-40 bg-primary/5 rounded-full blur-3xl" />
+                                    <div className="absolute -bottom-8 -right-8 w-40 h-40 bg-brand-500/10 rounded-full blur-3xl" />
                                 </div>
                             </div>
                         </div>
@@ -215,14 +208,13 @@ const LandingPage = () => {
                 <section className="py-32">
                     <div className="container mx-auto px-6">
                         <div className="bg-slate-900 rounded-[3rem] p-12 lg:p-24 text-center text-white relative overflow-hidden shadow-2xl">
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(52,211,153,0.1),transparent)] pointer-events-none" />
+                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(243,108,20,0.18),transparent)] pointer-events-none" />
                             <h2 className="text-4xl lg:text-6xl font-extrabold mb-8 relative z-10 leading-tight">Ready to reward <br /> true loyalty?</h2>
                             <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-12 relative z-10">
-                                Join hundreds of premium brands using Loyalty Rewards to build lasting relationships.
-                                Setup takes less than 10 minutes.
+                                Join hundreds of fine jewellery patrons using Effission to build lasting relationships and earn pure gold.
                             </p>
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-5 relative z-10">
-                                <Button size="lg" className="rounded-full px-12 h-14 text-base font-semibold bg-primary hover:bg-emerald-600 text-white" asChild>
+                                <Button size="lg" className="rounded-full px-12 h-14 text-base font-semibold bg-primary hover:bg-brand-700 text-white shadow-lg shadow-brand-500/25" asChild>
                                     <Link to={user ? "/dashboard" : "/signup"}>{user ? "Go to Dashboard" : "Get Started Now"}</Link>
                                 </Button>
                                 <button className="px-8 py-3 font-bold text-slate-300 hover:text-white transition-colors">Talk to Sales</button>
@@ -237,13 +229,14 @@ const LandingPage = () => {
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
                         <div className="col-span-2 lg:col-span-2">
                             <div className="flex items-center gap-2.5 mb-6">
-                                <div className="bg-primary p-1 rounded-md">
-                                    <Gift className="h-4 w-4 text-white" />
-                                </div>
-                                <span className="text-xl font-bold tracking-tight text-slate-900">Loyalty Rewards</span>
+                                <BrandLogo
+                                    imageClassName="h-7 w-auto object-contain"
+                                    showBadge={true}
+                                    badgeText="Loyalty"
+                                />
                             </div>
                             <p className="text-slate-500 max-w-xs leading-relaxed font-medium">
-                                Architecting the future of luxury brand loyalty through precision Ledger-based intelligence.
+                                Architecting the future of fine jewellery brand loyalty through precision ledger-based rewards and certified gold benefits.
                             </p>
                         </div>
                         <div>
@@ -271,7 +264,7 @@ const LandingPage = () => {
                         </div>
                     </div>
                     <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
-                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">© 2026 LOYALTY GROUP</p>
+                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">© 2026 EFFISSION JEWELLERY & LOYALTY PLATFORM</p>
                         <div className="flex gap-8">
                             <a href="#" className="text-slate-400 hover:text-slate-900 transition-colors">Twitter</a>
                             <a href="#" className="text-slate-400 hover:text-slate-900 transition-colors">LinkedIn</a>

@@ -119,7 +119,7 @@ const Transactions = () => {
                                             ₹{parseFloat(txn.amount).toLocaleString()}
                                         </TableCell>
                                         <TableCell className="text-right pr-8">
-                                            <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 hover:bg-emerald-50 border-none px-3 py-1 rounded-full font-black text-sm gap-1">
+                                            <Badge variant="secondary" className="bg-brand-50 text-brand-700 hover:bg-brand-100 border border-brand-200/60 px-3 py-1 rounded-full font-black text-sm gap-1">
                                                 <ArrowUpRight className="h-3.5 w-3.5" />
                                                 +{txn.pointsEarned}
                                             </Badge>

@@ -70,7 +70,7 @@ const Rewards = () => {
                         <div className="h-10 w-px bg-slate-100 mx-2" />
                         <div className="flex flex-col">
                             <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Max Redemption</span>
-                            <span className="text-xl font-black text-emerald-600">{maxRedeemLimit} <span className="text-xs">PTS</span></span>
+                            <span className="text-xl font-black text-brand-600">{maxRedeemLimit} <span className="text-xs">PTS</span></span>
                         </div>
                     </CardContent>
                 </Card>
@@ -80,13 +80,13 @@ const Rewards = () => {
             <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-5 flex gap-4 text-sm text-emerald-900 shadow-sm"
+                className="bg-brand-50/60 border border-brand-200/70 rounded-2xl p-5 flex gap-4 text-sm text-brand-900 shadow-sm"
             >
                 <div className="bg-white rounded-xl p-2 shadow-sm shrink-0 h-fit">
-                    <Info size={20} className="text-primary" />
+                    <Info size={20} className="text-brand-600" />
                 </div>
                 <div className="font-medium leading-relaxed">
-                    <span className="font-black text-emerald-700 uppercase tracking-tight mr-2">Enterprise Policy:</span>
+                    <span className="font-black text-brand-700 uppercase tracking-tight mr-2">Enterprise Policy:</span>
                     To maintain balance stability, members can redeem up to <span className="font-bold">{loyaltyConfig?.maxRedeemPercentage * 100}%</span> of their current balance per request. This ensures high-value liquidity for all members.
                 </div>
             </motion.div>
@@ -124,7 +124,7 @@ const Rewards = () => {
                                         </Badge>
                                     </div>
                                     <div className="absolute bottom-4 left-6">
-                                        <div className="bg-primary text-white text-xl font-black px-5 py-2 rounded-2xl shadow-xl shadow-primary/20">
+                                        <div className="bg-primary text-white text-xl font-black px-5 py-2 rounded-2xl shadow-xl shadow-brand-500/20">
                                             {reward.pointsCost} <span className="text-xs font-bold uppercase opacity-80">pts</span>
                                         </div>
                                     </div>
@@ -152,7 +152,7 @@ const Rewards = () => {
                                             </div>
                                         )}
                                         {isRedeemable && (
-                                            <div className="flex items-center gap-2 text-xs font-black text-emerald-600 uppercase tracking-tight bg-emerald-50/50 p-2 rounded-xl border border-emerald-100">
+                                            <div className="flex items-center gap-2 text-xs font-black text-brand-600 uppercase tracking-tight bg-brand-50/60 p-2 rounded-xl border border-brand-200/60">
                                                 <CheckCircle size={14} /> Eligible for Redemption
                                             </div>
                                         )}
