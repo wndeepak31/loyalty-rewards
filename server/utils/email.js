@@ -1,8 +1,17 @@
 const { Resend } = require('resend');
 
-const resendApiKey = process.env.RESEND_API_KEY;
-const resend = resendApiKey ? new Resend(resendApiKey) : null;
-const fromEmail = process.env.FROM_EMAIL || 'Effission Gold <onboarding@resend.dev>';
+function getResendClient() {
+    const key = process.env.RESEND_API_KEY;
+    if (!key) {
+        console.warn('[RESEND CONFIG NOTICE] RESEND_API_KEY is not configured in environment variables');
+        return null;
+    }
+    return new Resend(key);
+}
+
+function getFromEmail() {
+    return process.env.FROM_EMAIL || 'Effission Gold <support@tattvamwithin.com>';
+}
 
 /**
  * Send 6-digit verification OTP email for Signup
@@ -77,17 +86,20 @@ async function sendVerificationEmail(email, code, name) {
     </html>
   `;
 
+    const resend = getResendClient();
+    const from = getFromEmail();
+
     if (resend) {
         try {
             const response = await resend.emails.send({
-                from: fromEmail,
+                from,
                 to: email,
                 subject,
                 html,
             });
 
             if (response.error) {
-                console.warn('[RESEND NOTICE]', response.error.message);
+                console.error('[RESEND ERROR]', response.error);
             } else {
                 console.log(`[RESEND EMAIL SENT] Verification code sent to ${email} (ID: ${response.data?.id})`);
                 return { success: true, id: response.data?.id };
@@ -182,17 +194,20 @@ async function sendPasswordResetEmail(email, resetUrl, name) {
     </html>
   `;
 
+    const resend = getResendClient();
+    const from = getFromEmail();
+
     if (resend) {
         try {
             const response = await resend.emails.send({
-                from: fromEmail,
+                from,
                 to: email,
                 subject,
                 html,
             });
 
             if (response.error) {
-                console.warn('[RESEND NOTICE]', response.error.message);
+                console.error('[RESEND ERROR]', response.error);
             } else {
                 console.log(`[RESEND EMAIL SENT] Password reset email sent to ${email} (ID: ${response.data?.id})`);
                 return { success: true, id: response.data?.id };

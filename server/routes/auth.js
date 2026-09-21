@@ -314,7 +314,10 @@ router.post(
             user.resetPasswordExpires = new Date(Date.now() + 3600000);
             await user.save();
 
-            const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+            const clientUrl = process.env.CLIENT_URL 
+                || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null)
+                || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
+                || 'https://loyalty-rewards.vercel.app';
             const resetUrl = `${clientUrl}/reset-password/${token}`;
 
             // Dispatch branded password reset email via Resend
