@@ -24,6 +24,11 @@ const User = sequelize.define('User', {
             isEmail: { msg: 'Must be a valid email' },
         },
     },
+    phone: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+        field: 'phone'
+    },
     password: {
         type: DataTypes.STRING(255),
         allowNull: false,
@@ -68,6 +73,22 @@ const User = sequelize.define('User', {
         type: DataTypes.DATE,
         allowNull: true,
         field: 'reset_password_expires'
+    },
+    isEmailVerified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+        field: 'is_email_verified'
+    },
+    emailVerificationCode: {
+        type: DataTypes.STRING(10),
+        allowNull: true,
+        field: 'email_verification_code'
+    },
+    emailVerificationExpires: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: 'email_verification_expires'
     },
 }, {
     timestamps: true,

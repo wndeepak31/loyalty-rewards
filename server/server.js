@@ -5,9 +5,7 @@ try {
     express = require('express');
     cors = require('cors');
     path = require('path');
-    if (process.env.NODE_ENV !== 'production') {
-        require('dotenv').config();
-    }
+    require('dotenv').config();
     console.log('[Server] Core modules loaded');
 } catch (err) {
     console.error('[Server] FATAL: Core module load failed:', err);
@@ -125,6 +123,17 @@ const initDb = async () => {
         try {
             await sequelize.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS lifetime_spend DECIMAL(15, 2) DEFAULT 0.00;');
             console.log('Verified lifetime_spend column exists');
+
+            // Ensure email verification and contact columns exist in production
+            await sequelize.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS is_email_verified BOOLEAN DEFAULT FALSE;');
+            await sequelize.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verification_code VARCHAR(10);');
+            await sequelize.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verification_expires TIMESTAMP WITH TIME ZONE;');
+            await sequelize.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(20);');
+            // Ensure ON DELETE CASCADE on all child tables referencing users
+            await sequelize.query('ALTER TABLE transactions DROP CONSTRAINT IF EXISTS transactions_user_id_fkey, ADD CONSTRAINT transactions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;');
+            await sequelize.query('ALTER TABLE redemptions DROP CONSTRAINT IF EXISTS redemptions_user_id_fkey, ADD CONSTRAINT redemptions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;');
+            await sequelize.query('ALTER TABLE points_ledger DROP CONSTRAINT IF EXISTS points_ledger_user_id_fkey, ADD CONSTRAINT points_ledger_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;');
+            console.log('Verified email verification, contact, and CASCADE foreign key constraints');
 
             // Align Tier Thresholds: Silver at 1 lac, Gold at 2 lac
             await sequelize.query("UPDATE loyalty_tiers SET min_spend = 100000 WHERE name = 'Silver';");

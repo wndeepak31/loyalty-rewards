@@ -8,14 +8,14 @@ const LoyaltyConfig = require('./LoyaltyConfig');
 const PointsLedger = require('./PointsLedger');
 
 // Associations
-User.hasMany(Transaction, { foreignKey: 'user_id', as: 'transactions' });
-Transaction.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(Transaction, { foreignKey: 'user_id', as: 'transactions', onDelete: 'CASCADE', hooks: true });
+Transaction.belongsTo(User, { foreignKey: 'user_id', as: 'user', onDelete: 'CASCADE' });
 
-User.hasMany(Redemption, { foreignKey: 'user_id', as: 'redemptions' });
-Redemption.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(Redemption, { foreignKey: 'user_id', as: 'redemptions', onDelete: 'CASCADE', hooks: true });
+Redemption.belongsTo(User, { foreignKey: 'user_id', as: 'user', onDelete: 'CASCADE' });
 
-User.hasMany(PointsLedger, { foreignKey: 'user_id', as: 'ledgerEntries' });
-PointsLedger.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(PointsLedger, { foreignKey: 'user_id', as: 'ledgerEntries', onDelete: 'CASCADE', hooks: true });
+PointsLedger.belongsTo(User, { foreignKey: 'user_id', as: 'user', onDelete: 'CASCADE' });
 
 Reward.hasMany(Redemption, { foreignKey: 'reward_id', as: 'redemptions' });
 Redemption.belongsTo(Reward, { foreignKey: 'reward_id', as: 'reward' });

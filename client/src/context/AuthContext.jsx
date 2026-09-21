@@ -34,12 +34,31 @@ export const AuthProvider = ({ children }) => {
         return userRes.data;
     };
 
-    const signup = async (name, email, password) => {
-        const res = await api.post('/auth/signup', { name, email, password });
-        localStorage.setItem('token', res.data.token);
-        const userRes = await api.get('/users/me');
-        setUser(userRes.data);
-        return userRes.data;
+    const signup = async (name, email, password, phone) => {
+        const res = await api.post('/auth/signup', { name, email, password, phone });
+        if (res.data.token) {
+            localStorage.setItem('token', res.data.token);
+            const userRes = await api.get('/users/me');
+            setUser(userRes.data);
+            return { user: userRes.data, requiresVerification: false };
+        }
+        return res.data;
+    };
+
+    const verifyEmail = async (email, code) => {
+        const res = await api.post('/auth/verify-email', { email, code });
+        if (res.data.token) {
+            localStorage.setItem('token', res.data.token);
+            const userRes = await api.get('/users/me');
+            setUser(userRes.data);
+            return userRes.data;
+        }
+        return res.data;
+    };
+
+    const resendVerificationCode = async (email) => {
+        const res = await api.post('/auth/resend-code', { email });
+        return res.data;
     };
 
     const logout = () => {
@@ -58,7 +77,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, signup, logout, refreshUser }}>
+        <AuthContext.Provider value={{ user, loading, login, signup, verifyEmail, resendVerificationCode, logout, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );
