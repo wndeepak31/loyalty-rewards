@@ -68,10 +68,6 @@ npm run dev
 
 ## Usage Guide
 
-### Default Admin Credentials
-- **Email:** `admin@loyaltyapp.com`
-- **Password:** `admin123`
-
 ### Features
 - **Sign Up/Login:** Create a user account to start earning.
 - **Earn Points:** Log purchases in the "Transactions" tab (1 point per ₹1000).
